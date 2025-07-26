@@ -10,8 +10,11 @@ charset-normalizer==3.4.2
 click==8.1.8
 dash==3.1.1
 dash-bootstrap-components==2.0.3
+dash-bootstrap-templates==2.1.0
+dash_ag_grid==32.3.0
 datasets==4.0.0
 dill==0.3.8
+dotenv==0.9.9
 drain3==0.9.11
 filelock==3.18.0
 Flask==3.1.1
@@ -39,6 +42,7 @@ plotly==6.2.0
 propcache==0.3.2
 pyarrow==21.0.0
 python-dateutil==2.9.0.post0
+python-dotenv==1.1.1
 pytz==2025.2
 PyYAML==6.0.2
 regex==2024.11.6
