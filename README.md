@@ -17,12 +17,11 @@ python3 -m venv venv
 source venv/bin/activate
 
 # install dependencies
-pip install ".[dev]"
-pip install ".[gui]"
+pip install -r requirements
 
 # Start rdk_one3b service
-export PYTHONPATH='.'  # make sure to add current root to PYTHONPATH
-python3 gui/application.py # Run local plotly dash server.
+#export PYTHONPATH='.'  # make sure to add current root to PYTHONPATH
+python3 rdkone3b/gui/app.py # Run local plotly dash server.
 
 ```
 
