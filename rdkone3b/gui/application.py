@@ -7,11 +7,11 @@ import dash_bootstrap_components as dbc
 from dash_bootstrap_templates import load_figure_template
 import dash_ag_grid as dag
 import pandas as pd
-
+from rdkone3b.gui.callbacks import pattern
 from rdkone3b.gui.pages.utils import UPLOAD_DIRECTORY
 
 import os
-import base64
+import shutil
 if not os.path.exists(UPLOAD_DIRECTORY):
     os.makedirs(UPLOAD_DIRECTORY)
 else:
@@ -19,6 +19,8 @@ else:
         fpath = os.path.join(UPLOAD_DIRECTORY, fname)
         if os.path.isfile(fpath):
             os.remove(fpath)
+        else:
+            shutil.rmtree(fpath)
 
 # adds  templates to plotly.io
 load_figure_template(["darkly"])
@@ -80,70 +82,6 @@ upload_controls = dbc.Row(
     align="center",
     className="g-2",
 )
-
-# === Save uploaded file to local folder ===
-def save_file(name, content):
-    content_type, content_string = content.split(',')
-    decoded = base64.b64decode(content_string)
-    file_path = os.path.join(UPLOAD_DIRECTORY, name)
-    with open(file_path, "wb") as f:
-        f.write(decoded)
-
-def list_uploaded_files():
-    """List all files saved in the uploads folder."""
-    try:
-        return sorted(os.listdir(UPLOAD_DIRECTORY))
-    except FileNotFoundError:
-        return []
-
-# === Update dropdown list on upload ===
-@app.callback(
-    Output('filelist-dropdown', 'children'),
-    Input('upload-data', 'filename'),
-    Input('upload-data', 'contents'),
-)
-def update_dropdown(filenames, contents):
-    if filenames and contents:
-        for name, data in zip(filenames, contents):
-            save_file(name, data)
-
-    all_files = list_uploaded_files()
-
-    if not all_files:
-        return [dbc.DropdownMenuItem("No files uploaded", disabled=True)]
-
-    return [
-        dbc.DropdownMenuItem(
-            name,
-            id={"type": "file-item", "index": i},
-            n_clicks=0,
-            href=None  # Prevent navigation
-        )
-        for i, name in enumerate(all_files)
-    ]
-
-
-# === Show selected file name from dropdown click ===
-@app.callback(
-    Output("selected-file-label", "children"),
-    Input({"type": "file-item", "index": ALL}, "n_clicks"),
-    prevent_initial_call=True
-)
-def update_selected_file_label(n_clicks_list):
-    triggered_id = ctx.triggered_id
-
-    if not triggered_id or "index" not in triggered_id:
-        return ""
-
-    index = triggered_id["index"]
-
-    # Get up-to-date file list from disk
-    all_files = list_uploaded_files()
-    
-    if index < len(all_files):
-        return f"Selected: {all_files[index]}"
-    
-    return ""
 
 def generate_nav_links(navbar_dict):
     nav_items = []
